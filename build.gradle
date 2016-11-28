@@ -1,0 +1,40 @@
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath 'net.ltgt.gradle:gradle-apt-plugin:0.9'
+    classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.8'
+  }
+}
+
+subprojects {
+  apply plugin: 'java'
+  apply plugin: 'net.ltgt.apt'
+  apply plugin: 'net.ltgt.errorprone'
+
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    errorprone 'com.google.errorprone:error_prone_core:2.0.14'
+  }
+}
+
+project(':test-annotation-processor') {
+  dependencies {
+    apt 'com.google.auto.service:auto-service:1.0-rc2'
+    compileOnly 'com.google.auto.service:auto-service:1.0-rc2'
+
+    compile 'com.google.guava:guava:20.0'
+  }
+}
+
+project(':test-app') {
+  dependencies {
+    apt project(':test-annotation-processor')
+  }
+}

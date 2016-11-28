@@ -1,0 +1,2 @@
+include 'test-annotation-processor'
+include 'test-app'
