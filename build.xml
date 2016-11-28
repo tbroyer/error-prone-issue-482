@@ -1,0 +1,38 @@
+<project name="error prone issue 482" default="test-app">
+  <property environment="env"/>
+  <property name="m2repo" location="${env.HOME}/.m2/repository"/>
+
+  <!-- Run 'mvn dependency:get -Dartifact=com.google.errorprone:error_prone_ant:2.0.14 -->
+
+  <target name="test-annotation-processor">
+    <delete dir="test-annotation-processor/target/"/>
+    <mkdir dir="test-annotation-processor/target"/>
+    <mkdir dir="test-annotation-processor/target/classes"/>
+    <javac srcdir="test-annotation-processor/src/main/java"
+           destdir="test-annotation-processor/target/classes"
+           includeantruntime="false">
+      <classpath>
+        <pathelement location="${m2repo}/com/google/guava/guava/20.0/guava-20.0.jar"/>
+        <pathelement location="${m2repo}/com/google/auto/service/auto-service/1.0-rc2/auto-service-1.0-rc2.jar"/>
+        <pathelement location="${m2repo}/com/google/auto/auto-common/0.3/auto-common-0.3.jar"/>
+      </classpath>
+    </javac>
+    <jar destfile="test-annotation-processor/target/test-annotation-processor.jar"
+         basedir="test-annotation-processor/target/classes">
+    </jar>
+  </target>
+  <target name="test-app" depends="test-annotation-processor">
+    <delete dir="test-app/target"/>
+    <mkdir dir="test-app/target"/>
+    <mkdir dir="test-app/target/classes"/>
+    <javac srcdir="test-app/src/main/java" destdir="test-app/target/classes" includeantruntime="false"
+           compiler="com.google.errorprone.ErrorProneAntCompilerAdapter">
+      <compilerclasspath>
+        <pathelement location="${m2repo}/com/google/errorprone/error_prone_ant/2.0.14/error_prone_ant-2.0.14.jar"/>
+      </compilerclasspath>
+      <classpath>
+        <pathelement location="test-annotation-processor/target/test-annotation-processor.jar"/>
+      </classpath>
+    </javac>
+  </target>
+</project>
