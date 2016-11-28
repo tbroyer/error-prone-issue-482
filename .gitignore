@@ -3,3 +3,5 @@ target/
 # Gradle
 /.gradle/
 build/
+# Bazel
+/bazel-*
